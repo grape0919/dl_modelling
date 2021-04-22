@@ -10,6 +10,9 @@ class ImageClassifier(nn.Module):
 
         super().__init__()
 
+        self.layers = nn.Sequential(
+        )
+
 
     def forward(self, x):
         pass
