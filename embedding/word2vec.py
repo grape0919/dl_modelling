@@ -76,13 +76,13 @@ def W2V_for_Korean():
     train_data['document'] = train_data['document'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","")
 
     # 불용어 설정
-    stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
+    # stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
 
     okt = Okt()
     tokenized_data = []
     for sentence in train_data['document']:
         temp_X = okt.morphs(sentence, stem=True)
-        temp_Y = [word for word in temp_X if not word in stopwords]
+        temp_Y = [word for word in temp_X]# if not word in stopwords]
         tokenized_data.append(temp_Y)
     
     model = Word2Vec(sentences=tokenized_data, vector_size=100, window=5, min_count=5, workers=4, sg=0)
