@@ -6,7 +6,7 @@ from lxml import etree
 from nltk import tokenize
 from nltk.tokenize import word_tokenize, sent_tokenize
 import re
-from gensim.models import Word2Vec, KeyedVectors
+from gensim.models import Word2Vec, KeyedVectors, FastText
 import urllib.request
 import pandas as pd
 from konlpy.tag import Okt
@@ -61,36 +61,44 @@ def W2V_for_English():
     '''################################'''
 
     '''############ Save Model #############'''
-    # model.wv.save_word2vec_format('model/eng_w2v') # 모델 저장
-    # loaded_model = KeyedVectors.load_word2vec_format("model/eng_w2v") # 모델 로드
+    # model.wv.save_word2vec_format('embedding/vector/eng_w2v') # 모델 저장
+    # loaded_model = KeyedVectors.load_word2vec_format("embedding/vector/eng_w2v") # 모델 로드
 
 def W2V_for_Korean():
     #네이버 영화 리뷰
-    urllib.request.urlretrieve("https://raw.githubusercontent.com/e9t/nsmc/master/ratings.txt", filename="ratings.txt")
-    train_data = pd.read_table('ratings.txt')
+    # urllib.request.urlretrieve("https://raw.githubusercontent.com/e9t/nsmc/master/ratings.txt", filename="ratings.txt")
+    # train_data = pd.read_table('ratings.txt')
 
-    # remove null data
-    train_data = train_data.dropna(how = 'any')
+    # # remove null data
+    # train_data = train_data.dropna(how = 'any')
 
-    # 한글자 제거
-    train_data['document'] = train_data['document'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","")
+    # # 한글자 제거
+    # train_data['document'] = train_data['document'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","")
 
-    # 불용어 설정
-    # stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
+    # # 불용어 설정
+    # # stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
 
-    okt = Okt()
-    tokenized_data = []
-    for sentence in train_data['document']:
-        temp_X = okt.morphs(sentence, stem=True)
-        temp_Y = [word for word in temp_X]# if not word in stopwords]
-        tokenized_data.append(temp_Y)
+    # okt = Okt()
+    # tokenized_data = []
+    # for sentence in train_data['document']:
+    #     temp_X = okt.morphs(sentence, stem=True)
+    #     temp_Y = [word for word in temp_X]# if not word in stopwords]
+    #     tokenized_data.append(temp_Y) 
     
-    model = Word2Vec(sentences=tokenized_data, vector_size=100, window=5, min_count=5, workers=4, sg=0)
-    model.wv.save_word2vec_format("model/kor_w2v")
+    # model = FastText(sentences=tokenized_data, vector_size=100, window=5, min_count=5, workers=4, sg=1)
+    # model.save("embedding/vector/kor_ft")
     
-    model = KeyedVectors.load_word2vec_format('model/kor_w2v')
-    print(model.most_similar("최민식"))
-    print(model.most_similar("장르"))
+    model =  FastText.load('embedding/vector/kor_ft')
+    
+    print(model.wv.most_similar("최민식"))
+    print(model.wv.most_similar("코미디로맨스"))
+
+    print(model.wv.key_to_index['최민'])
+# from util.utils import util
+# def process_jamo(input, output):
+#     sentence = input.strip()
+#     processed_sentence = util.jamo_sentence(sentence)
+#     return processed_sentence
 
 
 if __name__ == '__main__':
