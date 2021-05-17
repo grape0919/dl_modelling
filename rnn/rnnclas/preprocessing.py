@@ -13,6 +13,8 @@ def sampleDownload():
     urllib.request.urlretrieve(
         "https://raw.githubusercontent.com/mohitgupta-omg/Kaggle-SMS-Spam-Collection-Dataset-/master/spam.csv"
         , filename="spam.csv")
+
+def loadDataset():
     data = pd.read_csv('spam.csv',encoding='latin1')
 
     print('총 샘플 수 : ', len(data)) # 5572
@@ -51,10 +53,10 @@ def preproc(data:DataFrame):
     tknizer.fit_on_texts(X_data)
     sequences = tknizer.texts_to_sequences(X_data)
 
-    print(sequences[:5])
+    # print(sequences[:5])
 
     word_to_index = tknizer.word_index
-    print(word_to_index)
+    # print(word_to_index)
 
     tf_threshold = 2
     total_cnt = len(word_to_index)
@@ -87,9 +89,10 @@ def preproc(data:DataFrame):
 
     print("훈련 크기 : ", data.shape)
     print("결과 크기 : ", len(Y_data))
-
+    print("학습데이터 크기: ", n_of_train)
     X_test = data[n_of_train:]
     y_test = np.array(Y_data[n_of_train:])
     X_train = data[:n_of_train]
     y_train = np.array(Y_data[:n_of_train])
 
+    return X_test, y_test, X_train, y_train, vocab_size

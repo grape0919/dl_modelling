@@ -11,10 +11,10 @@ def model(X_train, y_train, vocab_size:int=0):
     model.add(SimpleRNN(32)) # hidden layouts = 32
     model.add(Dense(1, activation='sigmoid'))
     
-    model.compile(loss="binary_crossentropy", metrics=['acc'])
-    history  = model.fit(X_train, y_train, epochs=4, batch_size=64, validation_split=0.2)
+    model.compile(optimizer='rmsprop', loss="binary_crossentropy", metrics=['acc'])
+    history  = model.fit(X_train, y_train, epochs=4, batch_size=1, validation_split=0.2)
 
-    return model
+    return model, history
 
 def saveModel(model:Sequential):
     model.save(SAVED_MODEL_FILEPATH)
