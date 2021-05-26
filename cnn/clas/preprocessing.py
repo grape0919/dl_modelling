@@ -1,18 +1,10 @@
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import urllib.request
+import numpy as np
 from pandas.core.frame import DataFrame
-from tensorflow.keras.preprocessing import sequence
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 
-####### SPAM DETECTION ##########
-def sampleDownload():
-    urllib.request.urlretrieve(
-        "https://raw.githubusercontent.com/mohitgupta-omg/Kaggle-SMS-Spam-Collection-Dataset-/master/spam.csv"
-        , filename="spam.csv")
 
 def loadDataset():
     data = pd.read_csv('spam.csv',encoding='latin1')
@@ -41,15 +33,15 @@ def loadDataset():
 
     return data
 
-# data['v1'].value_counts().plot(kind='bar')
-# plt.show()
 
 def preproc(data:DataFrame):
 
     X_data = data['v2']
     Y_data = data['v1']
 
-    tknizer = Tokenizer()
+    vocab_size = 1000
+
+    tknizer = Tokenizer(num_words=vocab_size)
     tknizer.fit_on_texts(X_data)
     sequences = tknizer.texts_to_sequences(X_data)
 
@@ -90,9 +82,9 @@ def preproc(data:DataFrame):
     print("훈련 크기 : ", data.shape)
     print("결과 크기 : ", len(Y_data))
     print("학습데이터 크기: ", n_of_train)
-    X_test = data[:n_of_train]
-    y_test = np.array(Y_data[:n_of_train])
-    X_train = data[n_of_train:]
-    y_train = np.array(Y_data[n_of_train:])
+    X_test = data[n_of_train:]
+    y_test = np.array(Y_data[n_of_train:])
+    X_train = data[:n_of_train]
+    y_train = np.array(Y_data[:n_of_train])
 
     return X_test, y_test, X_train, y_train, vocab_size

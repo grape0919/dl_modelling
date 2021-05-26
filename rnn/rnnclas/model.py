@@ -1,18 +1,21 @@
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Embedding, SimpleRNN, Dense
+from tensorflow.keras.layers import Embedding, SimpleRNN, Dense, LSTM, Bidirectional
 
 
 SAVED_MODEL_FILEPATH = "rnn/rnnclas/test_model"
 
 def model(X_train, y_train, vocab_size:int=0):
 
+    print("train data set: ", len(X_train))
+
     model = Sequential()
     model.add(Embedding(vocab_size, 32)) # 32차원의 임배딩
-    model.add(SimpleRNN(32)) # hidden layouts = 32
+    model.add(Bidirectional(LSTM(32))) # hidden layouts = 32
+    # model.add(SimpleRNN(32))
     model.add(Dense(1, activation='sigmoid'))
     
     model.compile(optimizer='rmsprop', loss="binary_crossentropy", metrics=['acc'])
-    history  = model.fit(X_train, y_train, epochs=4, batch_size=1, validation_split=0.2)
+    history  = model.fit(X_train, y_train, epochs=4, batch_size=64, validation_split=0.2)
 
     return model, history
 
